@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\Helpers\CommandVM.cs" />
+    <Compile Remove="Views\Helpers\CrudVMBaseTDT.cs" />
+    <Compile Remove="Views\Helpers\ViewVM.cs" />
+    <Compile Remove="Views\Helpers\VisualHelper.cs" />
+    <Compile Remove="Views\Helpers\VMBase.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="LoggerLib\" />
+    <Folder Include="Messages\" />
+    <Folder Include="Views\Helpers\" />
+  </ItemGroup>
+
+</Project>
