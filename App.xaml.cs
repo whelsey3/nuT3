@@ -35,7 +35,7 @@ namespace nuT3
             InitializeComponent();
 
             // Single Instance Check
-            bool notAlreadyRunning = false;
+            bool notAlreadyRunning = true;
             if (notAlreadyRunning)
             {
                 this.Properties["dbFile"] = dbFileName;  // need access in views for dbContext
@@ -102,6 +102,23 @@ namespace nuT3
             //App.Current.Properties["priorView"] = null;
             //var theProperties = App.Current.Properties;
             //var r = App.Current.Properties["RoutineTasksFolderID"];
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            int n = e.ApplicationExitCode;
+            if (n > 1)
+                mLogger.AddLogMessage("EXIT CODE was " + n);
+            mLogger.AddLogMessage("<==== Exiting OnExit-App ===>");
+            mFileLogger.Terminate();
+            base.OnExit(e);
+        }
+
+        protected override void OnSessionEnding(SessionEndingCancelEventArgs e)
+        {
+            mLogger.AddLogMessage("<==== Exiting OnSessionEnding-App ===>");
+            mFileLogger.Terminate();
+            base.OnSessionEnding(e);
         }
 
     }
