@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace nuT3.Views.Tracks
+namespace nuT3
 {
     /// <summary>
-    /// Interaction logic for Tracks.xaml
+    /// Interaction logic for TracksView.xaml
     /// </summary>
-    public partial class Tracks : UserControl
+    public partial class TracksView : UserControl
     {
-        public Tracks()
+        public TracksView()
         {
             InitializeComponent();
         }

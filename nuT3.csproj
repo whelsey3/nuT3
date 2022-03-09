@@ -10,7 +10,6 @@
   <ItemGroup>
     <Compile Remove="Views\Helpers\CommandVM.cs" />
     <Compile Remove="Views\Helpers\CrudVMBaseTDT.cs" />
-    <Compile Remove="Views\Helpers\ViewVM.cs" />
     <Compile Remove="Views\Helpers\VisualHelper.cs" />
     <Compile Remove="Views\Helpers\VMBase.cs" />
   </ItemGroup>

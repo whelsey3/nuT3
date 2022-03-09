@@ -75,7 +75,7 @@ namespace nuT3
         private void SetUpLogging(string logDirectory)
         {
             mLogger = Logger.Instance;
-            string logName0 = System.IO.Path.Combine(logDirectory, "logTDTnew_" + System.DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".log");
+            string logName0 = System.IO.Path.Combine(logDirectory, "lognuT3_" + System.DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".log");
 
             mFileLogger = new FileLogger(logName0);
             mFileLogger.Init();
