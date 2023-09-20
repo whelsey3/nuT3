@@ -1,13 +1,19 @@
-﻿using Microsoft.Toolkit.Mvvm;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
+﻿//using Microsoft.Toolkit.Mvvm;
+//using Microsoft.Toolkit.Mvvm.ComponentModel;
+//using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Helpers;
+using CommunityToolkit.Common;
+using CommunityToolkit.Mvvm;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+
 using System.Collections.ObjectModel;
 //using BuildSqliteCF.Entity;
 //using GalaSoft.MvvmLight;
 //using GalaSoft.MvvmLight.Messaging;
 //using LoggerLib;
 using System;
-using System.Collections.ObjectModel;
+//using System.Collections.ObjectModel;
 using System.Data;  //Validation;
 using System.Diagnostics;
 using System.Linq;
@@ -34,8 +40,8 @@ namespace nuT3
 
         // Navigate to ToDos (as default view)
         //var defaultView = new ViewVM { ViewDisplay = "ToDos", ViewType = typeof(ToDosView),   ViewModelType = typeof(ToDosViewModel) };
-          var defaultView = new ViewVM { ViewDisplay = "Tracks", ViewType = typeof(TracksView), ViewModelType = typeof(TracksViewModel)};
-            defaultView.NavigateExecute();
+         ViewVM defaultView = new ViewVM { ViewDisplay = "Tracks", ViewType = typeof(TracksView), ViewModelType = typeof(TracksViewModel)};
+            //defaultView.NavigateExecute();
 
             //var msg1 = new ChangeViewMessage { ViewModelType = typeof(ToDosView), ViewType = typeof(ToDosViewModel) };
             //Messenger.Default.Send<ChangeViewMessage>(msg1);

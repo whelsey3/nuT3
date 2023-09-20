@@ -6,8 +6,14 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 // Toolkit.Mvvm
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Common;
+using CommunityToolkit.Mvvm;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Helpers;
+//using Microsoft.Toolkit.Mvvm.ComponentModel;
+//using Microsoft.Toolkit.Mvvm.Input;
+//using Microsoft.Toolkit.Mvvm.Messaging;
+using LoggerLib;
 
 namespace nuT3
 {
@@ -23,16 +29,18 @@ namespace nuT3
         //public UserControl origView { get; set; }
         //public Window rView { get; set; }    // used for reports
         //public RelayCommand Navigate { get; set; }
-        public AsyncRelayCommand Navigate { get; set; }
+        public CommunityToolkit.Mvvm.Input.RelayCommand Navigate { get; set; }
 
-        // Collection of views that have been built and are available for reuse
+        // Collection of views that have been built and available for reuse
         static ObservableCollection<UserControl> builtViews = new ObservableCollection<UserControl>();
 
         public ViewVM()
         {
-            Navigate = new RelayCommand(NavigateExecute);
+            Navigate = new CommunityToolkit.Mvvm.Input.RelayCommand(NavigateExecute);
+           // Navigate = new RelayCommand((param) => NavigateExecute(param), () => true);
         }
 
+        //public void NavigateExecute()
         public void NavigateExecute()
         {
             // Triggered by Button Command,set by collection of ViewVM
@@ -41,6 +49,7 @@ namespace nuT3
             // Handle close out of old view, if there =================
             if (oldView != null)
             {
+                mLogger.AddLogMessage("RunCloseOut *******");
                 RunCloseOut(oldView);
             }
             else
@@ -48,8 +57,9 @@ namespace nuT3
                 mLogger.AddLogMessage("CloseOut Not needed.  oldView null");
             }
 
-            UserControl theNewOne = null;
-           // var t = thePrior.GetType().Name;
+            //UserControl theNewOne = null;
+            UserControl theNewOne; // = null;
+            // var t = thePrior.GetType().Name;
             mLogger.AddLogMessage("Navigate command:  Navigate to ViewType = " + ViewType.Name + " from " + oldView);
 
             bool alreadyThere = true;  // T=>already built,needs refresh   F=>building new
@@ -86,42 +96,42 @@ namespace nuT3
 
                 if (alreadyThere)
                 {
-                    // Handle refresh of existing theNewOne ===================
-                    mLogger.AddLogMessage("--NO Activation needed. Using->" + theNewOne);
+                  //////  // Handle refresh of existing theNewOne ===================
+                  //////  mLogger.AddLogMessage("--NO Activation needed. Using->" + theNewOne);
 
-                    //  Need refresh data for theNewOne
-                    Type oldType = theNewOne.GetType();
-                    ToDosView a = theNewOne as ToDosView;
-                    TracksView b = theNewOne as TracksView;
-                    PlansView c = theNewOne as PlansView;
+                  //////  //  Need refresh data for theNewOne
+                  //////  Type oldType = theNewOne.GetType();
+                  //////  ToDosView a = theNewOne as ToDosView;
+                  //////  TracksView b = theNewOne as TracksView;
+                  //////  PlansView c = theNewOne as PlansView;
 
-                    if (a != null)
-                    {
-                        mLogger.AddLogMessage("Refreshing previously used view: ToDosView");
-                        //((ToDosViewModel) a.DataContext).RefreshData();
-                        //// (((oldType)theNewOne).DataContext).RefreshData();
-                        ToDosViewModel tvm = ((ToDosViewModel)a.DataContext);
-                  //      Messenger.Default.Register<CommandMessage>(tvm, (action) => HandleCommand(action));
-                        tvm.StartUp();
-                    }
-                    else if (b != null)
-                    {
-                        mLogger.AddLogMessage("Refreshing new view: TracksView");
-                        //((TracksViewModel)b.DataContext).CloseOut();
-                        ((TracksViewModel) b.DataContext).StartUp();
-                    }
-                    else if (c != null)
-                    {
-                        mLogger.AddLogMessage("Refreshing new view: PlansView");
-                        ((PlansViewModel) c.DataContext).StartUp();
-                    }
+                  //////  if (a != null)
+                  //////  {
+                  //////      mLogger.AddLogMessage("Refreshing previously used view: ToDosView");
+                  //////      //((ToDosViewModel) a.DataContext).RefreshData();
+                  //////      //// (((oldType)theNewOne).DataContext).RefreshData();
+                  //////      ToDosViewModel tvm = ((ToDosViewModel)a.DataContext);
+                  ////////      Messenger.Default.Register<CommandMessage>(tvm, (action) => HandleCommand(action));
+                  //////      tvm.StartUp();
+                  //////  }
+                  //////  else if (b != null)
+                  //////  {
+                  //////      mLogger.AddLogMessage("Refreshing new view: TracksView");
+                  //////      //((TracksViewModel)b.DataContext).CloseOut();
+                  //////      ((TracksViewModel) b.DataContext).StartUp();
+                  //////  }
+                  //////  else if (c != null)
+                  //////  {
+                  //////      mLogger.AddLogMessage("Refreshing new view: PlansView");
+                  //////      ((PlansViewModel) c.DataContext).StartUp();
+                  //////  }
                 }
                 else
                 {
                     //  Need to activate the new one  // Need a new instance
                     mLogger.AddLogMessage("Activator call for '" + ViewType.Name + "'");
                     //  activation automatically refreshes data
-                    theNewOne = (UserControl)Activator.CreateInstance(ViewType);
+          //          theNewOne = (UserControl)Activator.CreateInstance(ViewType);
                     View = theNewOne;
                     // Add View to collection of prior views
                     builtViews.Add(theNewOne);
@@ -131,8 +141,9 @@ namespace nuT3
                 mLogger.AddLogMessage("SEND ChangeViewMessage from NavigateExecute");
 
                 // Actually change view
+                // CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger
                 var msg1 = new ChangeViewMessage { newView = theNewOne, ViewModelType = ViewModelType, ViewType = ViewType };
-                Messenger.Default.Send<ChangeViewMessage>(msg1);
+                WeakReferenceMessenger.Default.Send<ChangeViewMessage>(msg1);
 
                 //  Currently used to set isCurrentView in CrudVMBaseTDT
                 //var msg0 = new NavigateMessage { View = theNewOne, ViewModelType = ViewModelType, ViewType = ViewType };
@@ -148,37 +159,38 @@ namespace nuT3
                 // ViewType was null
                 mLogger.AddLogMessage("PROBLEM -- ViewType was null in NavigateExecute");
             }
+            //return alreadyThere;
         }
 
         private void RunCloseOut<T> (T oldView)
         {
-            Type oldType = oldView.GetType();
-            //            var oldView = Holder.Content;
-            ToDosView a = oldView as ToDosView;
-            TracksView b = oldView as TracksView;
-            PlansView c = oldView as PlansView;
-            mLogger.AddLogMessage("CloseOut needed of old view: " + oldView.GetType());
+            //////Type oldType = oldView.GetType();
+            ////////            var oldView = Holder.Content;
+            //////ToDosView a = oldView as ToDosView;
+            //////TracksView b = oldView as TracksView;
+            //////PlansView c = oldView as PlansView;
+            //////mLogger.AddLogMessage("CloseOut needed of old view: " + oldView.GetType());
 
-            //  ((T)oldView.DataContext).CloseOut();
+            ////////  ((T)oldView.DataContext).CloseOut();
 
-            if (a != null)
-            {
-                mLogger.AddLogMessage("CloseOut needed of old view: ToDosView");
-                ToDosViewModel tvm = ((ToDosViewModel)a.DataContext);
-                tvm.CloseOut();
-                //   ((ToDosViewModel)a.DataContext).CloseOut();
-                // (((oldType)oldView).DataContext).RefreshData();
-            }
-            else if (b != null)
-            {
-                mLogger.AddLogMessage("CloseOut needed of old view: TracksView");
-                ((TracksViewModel)b.DataContext).CloseOut();
-            }
-            else if (c != null)
-            {
-                mLogger.AddLogMessage("CloseOut needed of old view: PlansView");
-                ((PlansViewModel)c.DataContext).CloseOut();
-            }
+            //////if (a != null)
+            //////{
+            //////    mLogger.AddLogMessage("CloseOut needed of old view: ToDosView");
+            //////    ToDosViewModel tvm = ((ToDosViewModel)a.DataContext);
+            //////    tvm.CloseOut();
+            //////    //   ((ToDosViewModel)a.DataContext).CloseOut();
+            //////    // (((oldType)oldView).DataContext).RefreshData();
+            //////}
+            //////else if (b != null)
+            //////{
+            //////    mLogger.AddLogMessage("CloseOut needed of old view: TracksView");
+            //////    ((TracksViewModel)b.DataContext).CloseOut();
+            //////}
+            //////else if (c != null)
+            //////{
+            //////    mLogger.AddLogMessage("CloseOut needed of old view: PlansView");
+            //////    ((PlansViewModel)c.DataContext).CloseOut();
+            //////}
         }
 
         private UserControl ChkBuiltStatus(Type curType)

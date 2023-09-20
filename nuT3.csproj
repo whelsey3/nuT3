@@ -3,9 +3,18 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
+	<NullableContextOptions>enable</NullableContextOptions>
     <UseWPF>true</UseWPF>
+    <StartupObject>nuT3.App</StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="LoggerLib\**" />
+    <EmbeddedResource Remove="LoggerLib\**" />
+    <None Remove="LoggerLib\**" />
+    <Page Remove="LoggerLib\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Views\Helpers\CommandVM.cs" />
@@ -15,14 +24,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+    <PackageReference Include="CommunityToolkit.Common" Version="8.0.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="LoggerLib\" />
     <Folder Include="Messages\" />
     <Folder Include="Views\Helpers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LoggerLib">
+      <HintPath>..\..\Support\newLogger\bin\Release\LoggerLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

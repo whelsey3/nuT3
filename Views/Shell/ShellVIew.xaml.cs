@@ -13,6 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
+//using Microsoft.Toolkit.Mvvm;
+//using Microsoft.Toolkit.Mvvm.Messaging;
+//using Microsoft.Toolkit.Mvvm.ComponentModel;
+//using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Common;
+using CommunityToolkit.Mvvm;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+using LoggerLib;
 
 namespace nuT3
 {
@@ -33,11 +43,44 @@ namespace nuT3
             Style = (Style)FindResource(typeof(Window));
 
             //Messenger.Default.Register<ChangeViewMessage>(this, (action) => ShowUserControl(action));
+    //        WeakReferenceMessenger.Default.Register<ChangeViewMessage>(this, (action) => ShowUserControl(action));
             //Messenger.Default.Register<UserMessage>(this, (action) => ReceiveUserMessage(action));
             ////   Messenger.Default.Register<InEdit>(this, (action) => ReceiveInEditMessage(action));
 
+
+            // Register a message in some module
+            WeakReferenceMessenger.Default.Register<ChangeViewMessage>(this, (r, m) =>
+            {
+                // Handle the message here, with r being the recipient and m being the
+                // input message. Using the recipient passed as input makes it so that
+                // the lambda expression doesn't capture "this", improving performance.
+
+            });
+
             DataContext = new ShellViewModel();
+            mLogger.AddLogMessage("DataContext was set!");
+            DisplayDefault();    // experiment to get started
         }
+
+        private void DisplayDefault()
+        {
+            // throw new NotImplementedException();
+            mLogger.AddLogMessage("reached DisplayDefault");
+
+
+            mLogger.AddLogMessage("Activator call for '" + typeof(TracksViewModel) + "'");
+            //  activation automatically refreshes data
+      //      UserControl theNewOne = (UserControl)Activator.CreateInstance(typeof(TracksViewModel));
+            //View = theNewOne;
+            
+            ChangeViewMessage message = new ChangeViewMessage { //newView = TracksView,
+                ViewType = typeof(TracksViewModel), ViewModelType = typeof(TracksView)
+            };
+                
+            //  , newView = the
+            ShowUserControl(message);
+        }
+
         private void ShowUserControl(ChangeViewMessage nm)
         {
             // Get current view and save
@@ -120,6 +163,7 @@ namespace nuT3
             //        ((PlansViewModel)c.DataContext).RefreshData();
             //    }
             //}
+         //   nm.v
             Holder.Content = nm.newView;
             mLogger.AddLogMessage("ShellView - ShowUserControl - Content set to '" + nm.ViewType.Name + "'");
             App.Current.Properties["priorView"] = Holder.Content;
